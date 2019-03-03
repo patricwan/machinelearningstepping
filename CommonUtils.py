@@ -1,5 +1,6 @@
 import pandas as pd 
 import numpy as np
+import zipfile
 
 def trimList(originalList):
     newTripList = []
@@ -15,7 +16,6 @@ def mapColumnToNum(dataFrame,columnName):
     dfCols = dfCols.map(lambda eachStr: newTripList.index(eachStr.strip()))
     return trainWorkclass
 
-import zipfile
 #unzip a zip file to current folder *.zip
 def unzipFile(zipFile):
     zfile = zipfile.ZipFile(zipFile,'r')
