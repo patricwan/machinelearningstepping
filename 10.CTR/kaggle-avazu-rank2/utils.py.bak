@@ -121,7 +121,7 @@ def my_lift(order_by, p, y, w, n_rank, dual_axis=False, random_state=0, dither=1
     avg_p = grp1['pw'].aggregate(np.sum) / sum_w 
     avg_y = grp1['yw'].aggregate(np.sum) / sum_w
     
-    xs = list(range(1, n_rank+1))
+    xs = range(1, n_rank+1)
     
     fig, ax1 = plt.subplots()
     if fig_size is None:
@@ -188,7 +188,7 @@ def mergeLeaveOneOut2(df, dfv, vn):
 def calcTVTransform(df, vn, vn_y, cred_k, filter_train, mean0=None):
     if mean0 is None:
         mean0 = df.ix[filter_train, vn_y].mean()
-        print(("mean0:", mean0))
+        print("mean0:", mean0)
     else:
         mean0 = mean0[~filter_train]
         
@@ -242,10 +242,10 @@ def cntDualKey(df, vn, vn2, key_src, key_tgt, fill_na=False):
 def my_grp_cnt(group_by, count_by):
     _ts = time.time()
     _ord = np.lexsort((count_by, group_by))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     _ones = pd.Series(np.ones(group_by.size))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     #_cs1 = _ones.groupby(group_by[_ord]).cumsum().values
     _cs1 = np.zeros(group_by.size)
@@ -268,17 +268,17 @@ def my_grp_cnt(group_by, count_by):
                     break
                 j -= 1
             
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     if True:
         return _cs1
     else:
         _ts = time.time()    
 
         org_idx = np.zeros(group_by.size, dtype=np.int)
-        print((time.time() - _ts))
+        print(time.time() - _ts)
         _ts = time.time()    
-        org_idx[_ord] = np.asarray(list(range(group_by.size)))
-        print((time.time() - _ts))
+        org_idx[_ord] = np.asarray(range(group_by.size))
+        print(time.time() - _ts)
         _ts = time.time()    
 
         return _cs1[org_idx]
@@ -286,7 +286,7 @@ def my_grp_cnt(group_by, count_by):
 def my_cnt(group_by):
     _ts = time.time()
     _ord = np.argsort(group_by)
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     #_cs1 = _ones.groupby(group_by[_ord]).cumsum().values
     _cs1 = np.zeros(group_by.size)
@@ -308,16 +308,16 @@ def my_cnt(group_by):
                     break
                 j -= 1
             
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     return _cs1
 
 def my_grp_value_diff(group_by, order_by, value):
     _ts = time.time()
     _ord = np.lexsort((order_by, group_by))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     _ones = pd.Series(np.ones(group_by.size))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     #_cs1 = _ones.groupby(group_by[_ord]).cumsum().values
     _cs1 = np.zeros(group_by.size)
@@ -329,17 +329,17 @@ def my_grp_value_diff(group_by, order_by, value):
         else:
             _cs1[i0] = 1e7
             _prev_grp = group_by[i0]
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     
     return np.minimum(_cs1, 1e7)
 
 def my_grp_idx(group_by, order_by):
     _ts = time.time()
     _ord = np.lexsort((order_by, group_by))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     _ones = pd.Series(np.ones(group_by.size))
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     #_cs1 = _ones.groupby(group_by[_ord]).cumsum().values
     _cs1 = np.zeros(group_by.size)
@@ -351,14 +351,14 @@ def my_grp_idx(group_by, order_by):
         else:
             _cs1[i] = 1
             _prev_grp = group_by[i0]
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
     
     org_idx = np.zeros(group_by.size, dtype=np.int)
-    print((time.time() - _ts))
+    print(time.time() - _ts)
     _ts = time.time()    
-    org_idx[_ord] = np.asarray(list(range(group_by.size)))
-    print((time.time() - _ts))
+    org_idx[_ord] = np.asarray(range(group_by.size))
+    print(time.time() - _ts)
     _ts = time.time()    
 
     return _cs1[org_idx]
@@ -413,7 +413,7 @@ def get_set_diff(df, vn, f1, f2):
     set1 = set(np.unique(df[vn].values[f1]))
     set2 = set(np.unique(df[vn].values[f2]))
     set2_1 = set2 - set1
-    print((vn, '\t', len(set1), '\t', len(set2), '\t', len(set2_1)))
+    print(vn, '\t', len(set1), '\t', len(set2), '\t', len(set2_1))
     return len(set2_1) * 1.0 / len(set2)
 
 
@@ -481,7 +481,7 @@ def calc_exptv(t0, vn_list, last_day_only=False, add_count=False):
                 else:
                     day_exps[day_v][vn_key] = calcTVTransform(t1, vn, 'click', cred_k, filter_t2, mean0=t0.exptv_app_or_web.values)
             
-            print((vn, vn_key, " ", day_v, " done in ", time.time() - _tstart))
+            print(vn, vn_key, " ", day_v, " done in ", time.time() - _tstart)
         t0a.drop(vn, inplace=True, axis=1)
         
     for vn in vn_list:
@@ -495,7 +495,7 @@ def calc_exptv(t0, vn_list, last_day_only=False, add_count=False):
         if add_count:
             t0['cnttv_'+vn_key] = np.zeros(t0.shape[0])
         for day_v in range(22, 32):
-            print((vn, vn_key, day_v, t0.ix[t0.day.values == day_v, vn_exp].values.size, day_exps[day_v][vn_key]['exp'].size))
+            print(vn, vn_key, day_v, t0.ix[t0.day.values == day_v, vn_exp].values.size, day_exps[day_v][vn_key]['exp'].size)
             t0.loc[t0.day.values == day_v, vn_exp]=day_exps[day_v][vn_key]['exp']
             if add_count:
                 t0.loc[t0.day.values == day_v, 'cnttv_'+vn_key]=day_exps[day_v][vn_key]['cnt']

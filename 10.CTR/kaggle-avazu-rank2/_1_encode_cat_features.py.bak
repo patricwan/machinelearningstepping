@@ -25,11 +25,11 @@ if utils.sample_pct < 1.0:
     np.random.seed(999)
     r1 = np.random.uniform(0, 1, t0org0.shape[0])
     t0org0 = t0org0.ix[r1 < utils.sample_pct, :]
-    print(("testing with small sample of training data, ", t0org0.shape))
+    print("testing with small sample of training data, ", t0org0.shape)
 
 h0org['click'] = 0
 t0org = pd.concat([t0org0, h0org])
-print(("finished loading raw data, ", t0org.shape))
+print("finished loading raw data, ", t0org.shape)
 
 print("to add some basic features ...")
 t0org['day']=np.round(t0org.hour % 10000 / 100)
@@ -79,30 +79,30 @@ for vn in vns:
 
 days_npa = dftv.day.values
     
-for day_v in range(22, 32):
+for day_v in xrange(22, 32):
     df1 = dftv.ix[np.logical_and(dftv.day.values < day_v, dftv.day.values < 31), :].copy()
     df2 = dftv.ix[dftv.day.values == day_v, :]
-    print(("Validation day:", day_v, ", train data shape:", df1.shape, ", validation data shape:", df2.shape))
+    print("Validation day:", day_v, ", train data shape:", df1.shape, ", validation data shape:", df2.shape)
     pred_prev = df1.click.values.mean() * np.ones(df1.shape[0])
     for vn in vns:
         if 'exp2_'+vn in df1.columns:
             df1.drop('exp2_'+vn, inplace=True, axis=1)
-    for i in range(3):
+    for i in xrange(3):
         for vn in vns:
             p1 = calcLeaveOneOut2(df1, vn, 'click', n_ks[vn], 0, 0.25, mean0=pred_prev)
             pred = pred_prev * p1
-            print((day_v, i, vn, "change = ", ((pred - pred_prev)**2).mean()))
+            print(day_v, i, vn, "change = ", ((pred - pred_prev)**2).mean())
             pred_prev = pred    
             
         pred1 = df1.click.values.mean()
         for vn in vns:
-            print(("="*20, "merge", day_v, vn))
+            print("="*20, "merge", day_v, vn)
             diff1 = mergeLeaveOneOut2(df1, df2, vn)
             pred1 *= diff1
             exp2_dict[vn][days_npa == day_v] = diff1
         
         pred1 *= df1.click.values.mean() / pred1.mean()
-        print(("logloss = ", logloss(pred1, df2.click.values)))
+        print("logloss = ", logloss(pred1, df2.click.values))
         #print my_lift(pred1, None, df2.click.values, None, 20, fig_size=(10, 5))
         #plt.show()
 
@@ -115,7 +115,7 @@ cntDualKey(t0, 'device_ip', None, 'day_hour', 'day_hour_prev', fill_na=0)
 cntDualKey(t0, 'device_ip', None, 'day_hour', 'day_hour', fill_na=0)
 cntDualKey(t0, 'device_ip', None, 'day_hour', 'day_hour_next', fill_na=0)
 
-print("to create day diffs")
+print "to create day diffs"
 t0['pday'] = t0.day - 1
 calcDualKey(t0, 'device_ip', None, 'day', 'pday', 'click', 10, None, True, True)
 t0['cnt_diff_device_ip_day_pday'] = t0.cnt_device_ip_day.values  - t0.cnt_device_ip_pday.values
@@ -175,18 +175,18 @@ filter_tv = np.logical_and(t0.day.values >= _start_day, t0.day.values < 31)
 filter_t1 = np.logical_and(t0.day.values < 30, filter_tv)
 filter_v1 = np.logical_and(~filter_t1, filter_tv)    
     
-print((filter_tv.sum()))
+print(filter_tv.sum())
 
 
 for vn in feature_list_dict[feature_list_name] :
     if vn not in t0.columns:
-        print(("="*60 + vn))
+        print("="*60 + vn)
         
 yv = t0.click.values[filter_v1]
 
 t0tv_mx = t0.as_matrix(feature_list_dict[feature_list_name])
 
-print((t0tv_mx.shape))
+print(t0tv_mx.shape)
 
 
 print("to save t0tv_mx ...")

@@ -16,10 +16,10 @@ t0tv_mx_save = load(utils.tmp_data_path + 't0tv_mx.joblib_dat')
 t0tv_mx = t0tv_mx_save['t0tv_mx']
 click_values = t0tv_mx_save['click']
 day_values = t0tv_mx_save['day']
-print(("t0tv_mx loaded with shape", t0tv_mx.shape))
+print("t0tv_mx loaded with shape", t0tv_mx.shape)
 
 t0 = load(utils.tmp_data_path + 't3a.joblib_dat')['t3a']
-print(("t0 loaded with shape", t0.shape))
+print("t0 loaded with shape", t0.shape)
 
 
 vns={}
@@ -50,7 +50,7 @@ for day_v in range(day_bgn, day_end):
     for vns_name in list(vns.keys()):
         vns2 = vns[vns_name]
 
-        print((day_v, vns_name))
+        print(day_v, vns_name)
         t1 = t0.ix[:, ['click']].copy()
 
         idx_base = 0
@@ -77,10 +77,10 @@ for day_v in range(day_bgn, day_end):
         print("load results ...")
         fm_predv = pd.read_csv(open(path1 + '_tmp_2way_v.txt.out', 'r'), header=None).ix[:,0].values
         
-        print(("--- gini_norm:", gini_norm(fm_predv, click_values[day_values==day_v], None)))
+        print("--- gini_norm:", gini_norm(fm_predv, click_values[day_values==day_v], None))
         
         fm_vecs[day_v][vns_name] = fm_predv
-        print(('='*60))
+        print('='*60)
 
 
 t2 = t0.ix[:, ['click']].copy()
@@ -89,14 +89,14 @@ nn = t2.shape[0]
 for vns_name in list(vns.keys()):
     t2[vns_name] = np.zeros(nn)
     for day_v in range(day_bgn, day_end):
-        print((day_v, vns_name))
+        print(day_v, vns_name)
         t2.ix[day_values==day_v, vns_name] = fm_vecs[day_v][vns_name]
 
 print("to save FM features ...")
 dump(t2, tmp_data_path + 't2.joblib_dat')
 
 t0tv_mx3 = np.concatenate([t0tv_mx[:, :43], t2.ix[:, 1:].as_matrix()], axis=1)
-print(("t0tv_mx3 generated with shape", t0tv_mx3.shape))
+print("t0tv_mx3 generated with shape", t0tv_mx3.shape)
 
 t0tv_mx_save = {}
 t0tv_mx_save['t0tv_mx'] = t0tv_mx3

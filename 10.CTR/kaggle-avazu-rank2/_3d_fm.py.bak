@@ -56,7 +56,7 @@ def build_data():
     click_values = t0tv_mx_save['click']
     day_values = t0tv_mx_save['day']
 
-    print(("t0tv_mx loaded with shape ", t0tv_mx.shape))
+    print("t0tv_mx loaded with shape ", t0tv_mx.shape)
 
     np.random.seed(rseed)
     nn = t0tv_mx.shape[0]
@@ -69,12 +69,12 @@ def build_data():
     xt1 = t0tv_mx[filter1, :]
     yt1 = click_values[filter1]
     if xt1.shape[0] <=0 or xt1.shape[0] != yt1.shape[0]:
-        print((xt1.shape, yt1.shape))
+        print(xt1.shape, yt1.shape)
         raise ValueError('wrong shape!')
     dtrain = xgb.DMatrix(xt1, label=yt1)
     dvalid = xgb.DMatrix(t0tv_mx[filter_v1], label=click_values[filter_v1])
     watchlist = [(dtrain, 'train'), (dvalid, 'valid')]
-    print((xt1.shape, yt1.shape))
+    print(xt1.shape, yt1.shape)
 
 
     param = {'max_depth':6, 'eta':.5, 'objective':'binary:logistic', 'verbose':0,
@@ -89,10 +89,10 @@ def build_data():
     xgb_leaves = xgb_test_basis_d6.predict(dtv, pred_leaf = True)
 
     t0 = pd.DataFrame({'click': click_values})
-    print((xgb_leaves.shape))
+    print(xgb_leaves.shape)
     for i in range(n_trees):
         pred2 = xgb_leaves[:, i]
-        print((i, np.unique(pred2).size))
+        print(i, np.unique(pred2).size)
         t0['xgb_basis'+str(i)] = pred2
 
     t3a_save = load(utils.tmp_data_path + 't3a.joblib_dat')
@@ -102,7 +102,7 @@ def build_data():
     for vn in ['xgb_basis' + str(i) for i in range(n_trees)]:
         _cat = np.asarray(t0[vn].astype('category').values.codes, dtype='int32')
         _cat1 = _cat + idx_base
-        print((vn, idx_base, _cat1.min(), _cat1.max(), np.unique(_cat).size))
+        print(vn, idx_base, _cat1.min(), _cat1.max(), np.unique(_cat).size)
         t3a[vn] = _cat1
         idx_base += _cat.max() + 1
 

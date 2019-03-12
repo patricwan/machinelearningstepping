@@ -25,11 +25,11 @@ if utils.tvh == 'Y':
 
 #RandomForest model output
 rf_pred = load(utils.tmp_data_path + 'rf_pred_v.joblib_dat')
-print(("RF prediction loaded with shape", rf_pred.shape))
+print("RF prediction loaded with shape", rf_pred.shape)
 
 #GBDT (xgboost) model output
 xgb_pred = load(utils.tmp_data_path + 'xgb_pred_v.joblib_dat')
-print(("xgb prediction loaded with shape", xgb_pred.shape))
+print("xgb prediction loaded with shape", xgb_pred.shape)
 
 #Vowpal Wabbit model output
 ctr = 0
@@ -38,7 +38,7 @@ for i in [1, 2, 3, 4]:
     vw_pred += 1 / (1+ np.exp(-pd.read_csv(open(utils.tmp_data_path + 'vwV12__r%d_test.txt_pred.txt'%i, 'r'), header=None).ix[:,0].values))
     ctr += 1
 vw_pred /= ctr
-print(("VW prediction loaded with shape", vw_pred.shape))
+print("VW prediction loaded with shape", vw_pred.shape)
 
 #factorization machine model output
 ctr = 0
@@ -47,7 +47,7 @@ for i in [51, 52, 53, 54]:
     fm_pred += pd.read_csv(open(utils.tmp_data_path + 'fm__r%d_v.txt.out'%i, 'r'), header=None).ix[:,0].values
     ctr += 1
 fm_pred /= ctr
-print(("FM prediction loaded with shape", fm_pred.shape))
+print("FM prediction loaded with shape", fm_pred.shape)
 
 
 blending_w = {'rf': .075, 'xgb': .175, 'vw': .225, 'fm': .525}
@@ -80,12 +80,12 @@ if utils.tvh == 'Y':
     fn_sub = utils.tmp_data_path + 'sub_sample' + str(utils.sample_pct) + '.csv.gz'
     import gzip
     sub0.to_csv(gzip.open(fn_sub, 'w'), index=False)
-    print(("=" * 80))
-    print(("Training complted and submission file " + fn_sub + " created."))
-    print(("=" * 80))
+    print("=" * 80)
+    print("Training complted and submission file " + fn_sub + " created.")
+    print("=" * 80)
 else:
     #validate using day30
     print("Training completed!")
-    print(("=" * 80))
-    print(("logloss of blended prediction:", logloss(pred, click_values[day_values==day_test])))
-    print(("=" * 80))
+    print("=" * 80)
+    print("logloss of blended prediction:", logloss(pred, click_values[day_values==day_test]))
+    print("=" * 80)

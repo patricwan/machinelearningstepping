@@ -17,7 +17,7 @@ t0tv_mx_save = load(utils.tmp_data_path + 't0tv_mx3.joblib_dat')
 t0tv_mx3 = t0tv_mx_save['t0tv_mx']
 click_values = t0tv_mx_save['click']
 day_values = t0tv_mx_save['day']
-print(("t0tv_mx3 loaded with shape", t0tv_mx3.shape))
+print("t0tv_mx3 loaded with shape", t0tv_mx3.shape)
 
 
 n_trees = utils.xgb_n_trees
@@ -42,12 +42,12 @@ for idx in [0, 1, 2, 3]:
     xt1 = t0tv_mx3[filter1, :]
     yt1 = click_values[filter1]
     if xt1.shape[0] <=0 or xt1.shape[0] != yt1.shape[0]:
-        print((xt1.shape, yt1.shape))
+        print(xt1.shape, yt1.shape)
         raise ValueError('wrong shape!')
     dtrain = xgb.DMatrix(xt1, label=yt1)
     dvalid = xgb.DMatrix(t0tv_mx3[filter_v1], label=click_values[filter_v1])
     watchlist = [(dtrain, 'train'), (dvalid, 'valid')]
-    print((xt1.shape, yt1.shape))
+    print(xt1.shape, yt1.shape)
 
     plst = list(param.items()) + [('eval_metric', 'logloss')]
     xgb1 = xgb.train(plst, dtrain, n_trees, watchlist)
@@ -56,7 +56,7 @@ for idx in [0, 1, 2, 3]:
     
     ctr += 1
     predv_xgb += xgb1.predict(dvalid)
-    print(('-'*30, ctr, logloss(predv_xgb / ctr, click_values[filter_v1])))
+    print('-'*30, ctr, logloss(predv_xgb / ctr, click_values[filter_v1]))
 
 print("to save validation predictions ...")
 dump(predv_xgb / ctr, utils.tmp_data_path + 'xgb_pred_v.joblib_dat')
