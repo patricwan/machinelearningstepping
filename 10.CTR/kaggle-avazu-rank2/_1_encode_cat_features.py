@@ -17,8 +17,8 @@ raw_data_path = utils.raw_data_path
 tmp_data_path = utils.tmp_data_path
 
 
-t0org0 = pd.read_csv(open(raw_data_path + "train", "ra"))
-h0org = pd.read_csv(open(raw_data_path + "test", "ra"))
+t0org0 = pd.read_csv(open(raw_data_path + "avazu_train.csv", "r"))
+h0org = pd.read_csv(open(raw_data_path + "avazu_test.csv", "r"))
 
 
 if utils.sample_pct < 1.0:
