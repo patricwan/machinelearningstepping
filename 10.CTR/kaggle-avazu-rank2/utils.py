@@ -18,8 +18,8 @@ raw_data_path = '../../data/'
 tmp_data_path = './tmp_data/'
 
 #path to external binaries. Please see dependencies in the .pdf document
-fm_path = ' ~/Downloads/guestwalk/kaggle-2014-criteo/fm'
-xgb_path = '/home/zzhang/Downloads/xgboost/wrapper'
+fm_path = '../libffm-1.13'
+xgb_path = '/home/zzhang/Downloads/xgboost'
 vw_path = '~/vowpal_wabbit/vowpalwabbit/vw '
 
 
