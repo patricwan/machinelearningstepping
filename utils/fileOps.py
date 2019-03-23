@@ -1,5 +1,5 @@
 lineCountSeps = 100
-inputFile = "./perflogsimple.txt"
+inputFile = "../data/avazu_train.csv"
 
 fin = open(inputFile, 'r')
 

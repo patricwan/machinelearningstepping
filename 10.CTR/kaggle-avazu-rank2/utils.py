@@ -189,8 +189,8 @@ def calcTVTransform(df, vn, vn_y, cred_k, filter_train, mean0=None):
     if mean0 is None:
         mean0 = df.ix[filter_train, vn_y].mean()
         print(("mean0:", mean0))
-    else:
-        mean0 = mean0[~filter_train]
+    #else:
+        #mean0 = mean0[~filter_train]
         
     df['_key1'] = df[vn].astype('category').values.codes
     df_yt = df.ix[filter_train, ['_key1', vn_y]]
@@ -207,8 +207,8 @@ def calcTVTransform(df, vn, vn_y, cred_k, filter_train, mean0=None):
     _sum[np.isnan(_sum)] = 0
     
     r = {}
-    r['exp'] = (_sum + cred_k * mean0)/(_cnt + cred_k)
-    r['cnt'] = _cnt
+    #r['exp'] = (_sum + cred_k * mean0)/(_cnt + cred_k)
+    #r['cnt'] = _cnt
     return r
 
 def cntDualKey(df, vn, vn2, key_src, key_tgt, fill_na=False):
@@ -425,13 +425,13 @@ def calc_exptv(t0, vn_list, last_day_only=False, add_count=False):
         if vn == 'dev_id_ip':
             t0a[vn] = pd.Series(np.add(t0.device_id.values , t0.device_ip.values)).astype('category').values.codes
         elif vn == 'dev_ip_aw':
-            t0a[vn] = pd.Series(np.add(t0.device_ip.values , t0.app_or_web.astype('string').values)).astype('category').values.codes
+            t0a[vn] = pd.Series(np.add(t0.device_ip.values , t0.app_or_web.astype(str).values)).astype('category').values.codes
         elif vn == 'C14_aw':
-            t0a[vn] = pd.Series(np.add(t0.C14.astype('string').values , t0.app_or_web.astype('string').values)).astype('category').values.codes
+            t0a[vn] = pd.Series(np.add(t0.C14.astype(str).values , t0.app_or_web.astype(str).values)).astype('category').values.codes
         elif vn == 'C17_aw':
-            t0a[vn] = pd.Series(np.add(t0.C17.astype('string').values , t0.app_or_web.astype('string').values)).astype('category').values.codes
+            t0a[vn] = pd.Series(np.add(t0.C17.astype(str).values , t0.app_or_web.astype(str).values)).astype('category').values.codes
         elif vn == 'C21_aw':
-            t0a[vn] = pd.Series(np.add(t0.C21.astype('string').values , t0.app_or_web.astype('string').values)).astype('category').values.codes
+            t0a[vn] = pd.Series(np.add(t0.C21.astype(str).values , t0.app_or_web.astype(str).values)).astype('category').values.codes
         elif vn == 'as_domain':
             t0a[vn] = pd.Series(np.add(t0.app_domain.values , t0.site_domain.values)).astype('category').values.codes
         elif vn == 'site_app_id':
@@ -451,7 +451,7 @@ def calc_exptv(t0, vn_list, last_day_only=False, add_count=False):
         elif vn == 'site_id_domain':
             t0a[vn] = pd.Series(np.add(t0.site_id.values , t0.site_domain.values)).astype('category').values.codes
         elif vn == 'site_hour':
-            t0a[vn] = pd.Series(np.add(t0.site_domain.values , (t0.hour.values % 100).astype('string'))).astype('category').values.codes
+            t0a[vn] = pd.Series(np.add(t0.site_domain.values , (t0.hour.values % 100).astype(str))).astype('category').values.codes
         else:
             t0a[vn] = t0[vn]
 
@@ -494,9 +494,9 @@ def calc_exptv(t0, vn_list, last_day_only=False, add_count=False):
         t0[vn_exp] = np.zeros(t0.shape[0])
         if add_count:
             t0['cnttv_'+vn_key] = np.zeros(t0.shape[0])
-        for day_v in range(22, 32):
-            print((vn, vn_key, day_v, t0.ix[t0.day.values == day_v, vn_exp].values.size, day_exps[day_v][vn_key]['exp'].size))
-            t0.loc[t0.day.values == day_v, vn_exp]=day_exps[day_v][vn_key]['exp']
-            if add_count:
-                t0.loc[t0.day.values == day_v, 'cnttv_'+vn_key]=day_exps[day_v][vn_key]['cnt']
+        #for day_v in range(22, 32):
+            #print((vn, vn_key, day_v, t0.ix[t0.day.values == day_v, vn_exp].values.size, day_exps[day_v][vn_key]['exp'].size))
+            #t0.loc[t0.day.values == day_v, vn_exp]=day_exps[day_v][vn_key]['exp']
+            #if add_count:
+            #    t0.loc[t0.day.values == day_v, 'cnttv_'+vn_key]=day_exps[day_v][vn_key]['cnt']
         

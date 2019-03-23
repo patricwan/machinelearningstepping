@@ -1,0 +1,10 @@
+rm -rf te.gbdt*
+rm -rf tr.gbdt*
+rm -rf t*.ffm
+rm -rf model
+rm -rf te.out*
+rm -rf submission*
+rm -rf fc.trv*
+rm -rf sys
+rm -rf argpar*
+rm -rf collections
