@@ -36,4 +36,8 @@ def deleteFileByPattern(fileNamePattern):
        os.remove(fileName)
     return 1
 
+#append one column with default value. 
+def appendColumn(df,columnName, defaultValue=0):
+    df[columnName] = defaultValue
+    return df
 
