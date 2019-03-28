@@ -14,7 +14,7 @@ def mapColumnToNum(dataFrame,columnName):
     newTripList = trimList(dfColsList)
     dfCols = dataFrame[columnName]
     dfCols = dfCols.map(lambda eachStr: newTripList.index(eachStr.strip()))
-    return trainWorkclass
+    return dfCols
 
 #unzip a zip file to current folder *.zip
 def unzipFile(zipFile):
