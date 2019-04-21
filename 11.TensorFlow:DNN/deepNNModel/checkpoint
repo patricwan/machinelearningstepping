@@ -1,0 +1,6 @@
+model_checkpoint_path: "deepNNModel-29001"
+all_model_checkpoint_paths: "deepNNModel-25001"
+all_model_checkpoint_paths: "deepNNModel-26001"
+all_model_checkpoint_paths: "deepNNModel-27001"
+all_model_checkpoint_paths: "deepNNModel-28001"
+all_model_checkpoint_paths: "deepNNModel-29001"
