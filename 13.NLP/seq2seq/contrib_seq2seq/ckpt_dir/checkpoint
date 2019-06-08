@@ -1,0 +1,2 @@
+model_checkpoint_path: "epoch_801_attention"
+all_model_checkpoint_paths: "epoch_801_attention"

@@ -218,7 +218,7 @@ with tf.Session(graph=graph) as session:
         
     final_embeddings = normalized_embeddings.eval()
     print("*"*10+"final_embeddings:"+"*"*10+"\n",final_embeddings)
-    fp=open('vector_skip_gram.txt','w',encoding='utf8')
+    fp=open('../../../data/nlp/vector_skip_gram.txt','w',encoding='utf8')
     for k,v in reverse_dictionary.items():
         t=tuple(final_embeddings[k])
 

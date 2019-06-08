@@ -14,7 +14,7 @@ try:
 except NameError:
     unicode = str
 
-base_dir = '../../data/dataCnnNlp/cnews'
+base_dir = './../../../data/nlp/dataCnnNlp/cnews'
 vocab_dir = os.path.join(base_dir, 'cnews.vocab.txt')
 
 save_dir = 'checkpoints/textcnn'
