@@ -171,7 +171,7 @@ class UnigramTable:
         power = 0.75
         norm = sum([math.pow(t.count, power) for t in vocab]) # Normalizing constant
 
-        table_size = 1e8 # Length of the unigram table
+        table_size = int(1e8) # Length of the unigram table
         table = np.zeros(table_size, dtype=np.uint32)
 
         print('Filling unigram table')
