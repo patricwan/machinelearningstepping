@@ -28,3 +28,4 @@ testMatrix = np.random.randn(5, 3)
 #print("2 ", testMatrix[2])
 #print("3 ", testMatrix[3])
 #print("dot result ", np.dot(testMatrix[2], testMatrix[3]))
+
