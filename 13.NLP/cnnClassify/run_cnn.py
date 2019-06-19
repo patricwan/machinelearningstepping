@@ -145,8 +145,8 @@ def test():
 
     session = tf.Session()
     session.run(tf.global_variables_initializer())
-    saver = tf.train.Saver()
-    saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
+    #saver = tf.train.Saver()
+    #saver.restore(sess=session, save_path=save_path)  # 读取保存的模型
 
     print('Testing...')
     loss_test, acc_test = evaluate(session, x_test, y_test)
@@ -184,8 +184,8 @@ def test():
 if __name__ == '__main__':
     
     config = TCNNConfig()              # 1.加载配置参数; 初始化右边的类之后得到左边的对象config
-    if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
-        build_vocab(train_dir, vocab_dir, config.vocab_size)
+    #if not os.path.exists(vocab_dir):  # 如果不存在词汇表，重建
+    build_vocab(train_dir, vocab_dir, config.vocab_size)
     categories, cat_to_id = read_category()          # 制作分类目录
     words, word_to_id = read_vocab(vocab_dir)
     config.vocab_size = len(words)
