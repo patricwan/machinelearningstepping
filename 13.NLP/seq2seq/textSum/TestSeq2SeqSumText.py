@@ -109,8 +109,8 @@ lengths_texts = create_lengths(int_texts)
 sorted_summaries, sorted_texts = sortSummaryTexts(lengths_texts, int_summaries, int_texts, vocab_to_int)
 print(len(sorted_summaries), len(sorted_texts))
 
-start = 200000
-end = start + 5000
+start = 50000
+end = start + 50000
 sorted_summaries_short = sorted_summaries[start:end]
 sorted_texts_short = sorted_texts[start:end]
 
