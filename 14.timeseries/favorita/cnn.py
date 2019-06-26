@@ -16,17 +16,18 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # suppress tf warnings
 df, promo_df, items, stores = load_unstack('pw')
 
 # data after 2015
-df = df[pd.date_range(date(2015,6,1), date(2017,8,15))]
-promo_df = promo_df[pd.date_range(date(2015,6,1), date(2017,8,31))]
+df = df[pd.date_range(date(2016,6,1), date(2017,8,15))]
+promo_df = promo_df[pd.date_range(date(2016,6,1), date(2017,8,15))]
 
-promo_df = promo_df[df[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
-df = df[df[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
+promo_df = promo_df[df[pd.date_range(date(2016,6,1), date(2017,8,15))].max(axis=1)>0]
+df = df[df[pd.date_range(date(2016,6,1), date(2017,8,15))].max(axis=1)>0]
 promo_df = promo_df.astype('int')
 
 df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
                       parse_dates=["date"]).set_index(['store_nbr', 'item_nbr', 'date'])
 item_nbr_test = df_test.index.get_level_values(1)
 item_nbr_train = df.index.get_level_values(1)
+
 item_inter = list(set(item_nbr_train).intersection(set(item_nbr_test)))
 df = df.loc[df.index.get_level_values(1).isin(item_inter)]
 promo_df = promo_df.loc[promo_df.index.get_level_values(1).isin(item_inter)]
@@ -37,11 +38,11 @@ del item_nbr_test, item_nbr_train, item_inter, df_test; gc.collect()
 timesteps = 200
 
 # preparing data
-train_data = train_generator(df, promo_df, items, stores, timesteps, date(2017, 7, 5),
+train_data = train_generator(df, promo_df, items, stores, timesteps, date(2017, 1, 1),
                                            n_range=16, day_skip=7, batch_size=2000, aux_as_tensor=False, reshape_output=2)
-Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 7, 26),
+Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 1, 1),
                                      aux_as_tensor=False, reshape_output=2)
-Xtest, _ = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 8, 16),
+Xtest, _ = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 1, 1),
                                     aux_as_tensor=False, is_train=False, reshape_output=2)
 
 w = (Xval[7][:, 2] * 0.25 + 1) / (Xval[7][:, 2] * 0.25 + 1).mean() # validation weight: 1.25 if perishable and 1 otherwise per competition rules

@@ -16,7 +16,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # suppress tf warnings
 
 timesteps = 365
 
-df, promo_df, items, stores = load_unstack('all')
+df, promo_df, items, stores = load_unstack('pw')
 
 # data after 2015
 df = df[pd.date_range(date(2014,6,1), date(2017,8,15))]

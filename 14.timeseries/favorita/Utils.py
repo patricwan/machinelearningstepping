@@ -8,11 +8,21 @@ import gc
 
 def load_data():
     # df_train = pd.read_feather('train_after1608_raw')
-    df_train = pd.read_csv('../../../data/favgrocery/train.csv', usecols=[1, 2, 3, 4, 5], dtype={'onpromotion': bool},
+    #df_train = pd.re
+    #df_train = df_train.dropna(inplace=True)
+
+    df_train = pd.read_csv('../../../data/favgrocery/train.csv', usecols=[1, 2, 3, 4, 5],
+                           na_filter=False,
                            converters={'unit_sales': lambda u: np.log1p(float(u)) if float(u) > 0 else 0},
                            parse_dates=["date"])
-    df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
-                          parse_dates=["date"]).set_index(['store_nbr', 'item_nbr', 'date'])
+    df_train = df_train.dropna(axis = 0, how ='any')
+    df_train = df_train.astype({"onpromotion":'bool'})
+
+    df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4],
+                           na_filter=False,
+                           parse_dates=["date"]).set_index(['store_nbr', 'item_nbr', 'date'])
+    df_test = df_test.dropna(axis = 0, how ='any')
+    df_test = df_test.astype({"onpromotion":'bool'})
 
     # subset data
     df_2017 = df_train.loc[df_train.date>=pd.datetime(2016,1,1)]
@@ -82,9 +92,13 @@ def create_dataset(df, promo_df, items, stores, timesteps, first_pred_start, is_
     return create_dataset_part(df, promo_df, cat_features, item_group_mean, store_group_mean, timesteps, first_pred_start, reshape_output, aux_as_tensor, is_train)
 
 def train_generator(df, promo_df, items, stores, timesteps, first_pred_start,
-    n_range=1, day_skip=7, is_train=True, batch_size=2000, aux_as_tensor=False, reshape_output=0, first_pred_start_2016=None):
+    n_range=1, day_skip=7, is_train=True, batch_size=2000, aux_as_tensor=False, reshape_output=0, first_pred_start_2017=None):
+    
     encoder = LabelEncoder()
-    items_reindex = items.reindex(df.index.get_level_values(1))
+    dfLevelValues = df.index.get_level_values(1)
+    #print("dfLevelValues " , dfLevelValues)
+    
+    items_reindex = items.reindex(dfLevelValues)
     item_family = encoder.fit_transform(items_reindex['family'].values)
     item_class = encoder.fit_transform(items_reindex['class'].values)
     item_perish = items_reindex['perishable'].values
@@ -104,8 +118,8 @@ def train_generator(df, promo_df, items, stores, timesteps, first_pred_start,
 
     while 1:
         date_part = np.random.permutation(range(n_range))
-        if first_pred_start_2016 is not None:
-            range_diff = (first_pred_start - first_pred_start_2016).days / day_skip
+        if first_pred_start_2017 is not None:
+            range_diff = (first_pred_start - first_pred_start_2017).days / day_skip
             date_part = np.concat([date_part, np.random.permutation(range(range_diff, int(n_range/2) + range_diff))])
 
         for i in date_part:
