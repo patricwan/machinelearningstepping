@@ -20,22 +20,25 @@ import gc
 
 df_train = pd.read_csv(
     '../../../data/favgrocery/train.csv', usecols=[1, 2, 3, 4, 5],
-    dtype={'onpromotion': bool},
     converters={'unit_sales': lambda u: np.log1p(
         float(u)) if float(u) > 0 else 0},
     parse_dates=["date"]
     #skiprows=range(1, 66458909)  # 2016-01-01
 )
+df_train = df_train.dropna(axis = 0, how ='any')
+df_train = df_train.astype({"onpromotion":'bool'})
+    
 
 print("df_train top5", df_train[:5])
 
 df_test = pd.read_csv(
     "../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4],
-    dtype={'onpromotion': bool},
     parse_dates=["date"]  # , date_parser=parser
 ).set_index(
     ['store_nbr', 'item_nbr', 'date']
 )
+df_test = df_test.dropna(axis = 0, how ='any')
+df_test = df_test.astype({"onpromotion":'bool'})
 print("df_test top5", df_test[:5])
 
 items = pd.read_csv(

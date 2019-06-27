@@ -274,6 +274,7 @@ class RNNTextTF(object):
         with tf.device('/cpu:0'):
             embeddingrnn = tf.get_variable('embeddingrnn', [self.params.vocab_size, self.params.embedding_dim])
             embedding_inputs = tf.nn.embedding_lookup(embeddingrnn, self.input_x)
+            
 
         with tf.name_scope("rnn"):
             # 多层rnn网络
@@ -329,9 +330,14 @@ class RNNTextTF(object):
                 }
                 
                 if total_batch % self.params.print_per_batch == 0:
-                    loss_train, acc_train = session.run([self.loss, self.acc], feed_dict=feed_dict)
+                    loss_train, acc_train, y_predict = session.run([self.loss, self.acc, self.y_pred_cls], feed_dict=feed_dict)
+                    print('x_batch shape:',x_batch.shape)
+                    print('y_batch shape:',y_batch.shape)
                     print("RNNTextTF total_batch ", total_batch)
                     print("RNNTextTF loss_train ", loss_train)
+                    print('y_predict shape:',y_predict.shape)
+                    print('y_predict:',y_predict)
+
 
                 session.run(self.optim, feed_dict=feed_dict)  # 运行优化 真正开始运行,因为是相互依赖，倒着找的
                 total_batch += 1        

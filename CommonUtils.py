@@ -41,3 +41,30 @@ def appendColumn(df,columnName, defaultValue=0):
     df[columnName] = defaultValue
     return df
 
+
+def extractCSV(inFile,outFile,keyword):
+    line=0
+    flag=False
+    fO = open(outFile, 'w+')
+    with open(inFile, 'r') as fI:
+      for content in fI:
+         if (line==0 or flag == True):
+            fO.write(content)
+         if (keyword in content):
+            flag = True
+         line=line+1
+    fO.close()
+    fI.close()
+    return None
+
+def samplingCSV(inFile, outFile, samplingCount):
+    line=0
+    fO = open(outFile, 'w+')
+    with open(inFile, 'r') as fI:
+      for content in fI:
+         if (line % samplingCount ==0):
+            fO.write(content)
+         line=line+1
+    fO.close()
+    fI.close()
+

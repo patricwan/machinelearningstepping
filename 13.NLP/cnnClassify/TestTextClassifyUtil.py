@@ -30,8 +30,8 @@ x_train, y_train = process_file_get_data(train_dir, word_to_id, cat_to_id, param
 cnnTextTF.train(x_train, y_train)
 
 x_batch, y_batch = next(batch_iterator(x_train, y_train, params.batch_size))
-print("x_batch ", x_batch)
-print("y_batch ", y_batch)
+print("x_batch ", x_batch.shape)
+print("y_batch ", y_batch.shape)
 
 rnnparams = RNNTextTFParams()    
 rnnTextTF = RNNTextTF(rnnparams)
