@@ -25,7 +25,7 @@ def load_data():
     df_test = df_test.astype({"onpromotion":'bool'})
 
     # subset data
-    df_2017 = df_train.loc[df_train.date>=pd.datetime(2016,1,1)]
+    df_2017 = df_train.loc[df_train.date>=pd.datetime(2015,1,1)]
 
     # promo
     promo_2017_train = df_2017.set_index(

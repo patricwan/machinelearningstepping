@@ -47,16 +47,20 @@ values = dataset.values
 encoder = LabelEncoder()
 values[:,4] = encoder.fit_transform(values[:,4])
 values[:,8] = encoder.fit_transform(values[:,8])
+
 # 确保所有数据是浮动的
 values = values.astype('float32')
+
 # 归一化特征
 scaler = MinMaxScaler(feature_range=(0, 1))
 scaled = scaler.fit_transform(values)
+
 # 指定滞后时间大小
 n_hours = 3
 n_features = 8
 # 构建监督学习问题
 reframed = series_to_supervised(scaled, n_hours, 1)
+
 print(reframed.shape)
  
 # 分为训练集和测试集
