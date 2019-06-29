@@ -7,12 +7,12 @@ import gc
 
 from Utils import *
 
-df_2017, promo_2017, items = load_unstack('1617')
+df_2017, promo_2017, items, stores = load_unstack('pw')
 
 promo_2017 = promo_2017[df_2017[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
 df_2017 = df_2017[df_2017[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
 promo_2017 = promo_2017.astype('int')
-df_test = pd.read_csv("test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
+df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
                       parse_dates=["date"]).set_index(['store_nbr', 'item_nbr', 'date'])
 item_nbr_test = df_test.index.get_level_values(1)
 item_nbr_train = df_2017.index.get_level_values(1)
@@ -143,6 +143,7 @@ test_pred = []
 # best_rounds = []
 cate_vars = ['family', 'perish', 'store_nbr', 'store_cluster', 'store_type']
 w = (X_val["perish"] * 0.25 + 1) / (X_val["perish"] * 0.25 + 1).mean()
+best_rounds = []
 
 for i in range(16):
 
@@ -171,4 +172,4 @@ for i in range(16):
 
 cal_score(y_val, np.array(val_pred).T)
 
-make_submission(df_2017, np.array(test_pred).T)
+#make_submission(df_2017, np.array(test_pred).T, "lgbmsubmission.csv")

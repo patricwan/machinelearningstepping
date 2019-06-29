@@ -11,7 +11,7 @@ def load_data():
     #df_train = pd.re
     #df_train = df_train.dropna(inplace=True)
 
-    df_train = pd.read_csv('../../../data/favgrocery/train.csv', usecols=[1, 2, 3, 4, 5],
+    df_train = pd.read_csv('../../../data/favgrocery/trainDay.csv', usecols=[1, 2, 3, 4, 5],
                            na_filter=False,
                            converters={'unit_sales': lambda u: np.log1p(float(u)) if float(u) > 0 else 0},
                            parse_dates=["date"])
@@ -25,7 +25,7 @@ def load_data():
     df_test = df_test.astype({"onpromotion":'bool'})
 
     # subset data
-    df_2017 = df_train.loc[df_train.date>=pd.datetime(2015,1,1)]
+    df_2017 = df_train.loc[df_train.date>=pd.datetime(2013,1,1)]
 
     # promo
     promo_2017_train = df_2017.set_index(

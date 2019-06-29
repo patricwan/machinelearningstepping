@@ -19,7 +19,7 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 import gc
 
 df_train = pd.read_csv(
-    '../../../data/favgrocery/train.csv', usecols=[1, 2, 3, 4, 5],
+    '../../../data/favgrocery/trainDay.csv', usecols=[1, 2, 3, 4, 5],
     converters={'unit_sales': lambda u: np.log1p(
         float(u)) if float(u) > 0 else 0},
     parse_dates=["date"]

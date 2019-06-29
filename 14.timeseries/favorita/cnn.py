@@ -16,11 +16,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # suppress tf warnings
 df, promo_df, items, stores = load_unstack('pw')
 
 # data after 2015
-df = df[pd.date_range(date(2015,6,1), date(2017,8,15))]
-promo_df = promo_df[pd.date_range(date(2015,6,1), date(2017,8,15))]
+df = df[pd.date_range(date(2013,1,1), date(2016,8,15))]
+promo_df = promo_df[pd.date_range(date(2013,1,1), date(2016,8,15))]
 
-promo_df = promo_df[df[pd.date_range(date(2015,6,1), date(2017,8,15))].max(axis=1)>0]
-df = df[df[pd.date_range(date(2015,6,1), date(2017,8,15))].max(axis=1)>0]
+promo_df = promo_df[df[pd.date_range(date(2013,1,1), date(2016,8,15))].max(axis=1)>0]
+df = df[df[pd.date_range(date(2013,6,1), date(2016,8,15))].max(axis=1)>0]
 promo_df = promo_df.astype('int')
 
 df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
@@ -38,9 +38,9 @@ del item_nbr_test, item_nbr_train, item_inter, df_test; gc.collect()
 timesteps = 200
 
 # preparing data
-train_data = train_generator(df, promo_df, items, stores, timesteps, date(2015, 6, 1),
+train_data = train_generator(df, promo_df, items, stores, timesteps, date(2016, 6, 1),
                                            n_range=16, day_skip=7, batch_size=2000, aux_as_tensor=False, reshape_output=2)
-Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2015, 6, 1),
+Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2016, 6, 1),
                                      aux_as_tensor=False, reshape_output=2)
 Xtest, _ = create_dataset(df, promo_df, items, stores, timesteps, date(2016, 6, 1),
                                     aux_as_tensor=False, is_train=False, reshape_output=2)

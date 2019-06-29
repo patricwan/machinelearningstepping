@@ -19,14 +19,17 @@ timesteps = 365
 df, promo_df, items, stores = load_unstack('pw')
 
 # data after 2015
-df = df[pd.date_range(date(2014,6,1), date(2017,8,15))]
-promo_df = promo_df[pd.date_range(date(2014,6,1), date(2017,8,31))]
+df = df[pd.date_range(date(2013,1,1), date(2016,8,15))]
+promo_df = promo_df[pd.date_range(date(2013,1,1), date(2016,8,15))]
 
-promo_df = promo_df[df[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
-df = df[df[pd.date_range(date(2017,1,1), date(2017,8,15))].max(axis=1)>0]
+promo_df = promo_df[df[pd.date_range(date(2013,1,1), date(2016,8,15))].max(axis=1)>0]
+df = df[df[pd.date_range(date(2013,1,1), date(2016,8,15))].max(axis=1)>0]
 promo_df = promo_df.astype('int')
 
-df_test = pd.read_csv("test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
+print("df top 5", df[:5])
+print("promo_df top 5", promo_df[:5])
+
+df_test = pd.read_csv("../../../data/favgrocery/test.csv", usecols=[0, 1, 2, 3, 4], dtype={'onpromotion': bool},
                       parse_dates=["date"]).set_index(['store_nbr', 'item_nbr', 'date'])
 item_nbr_test = df_test.index.get_level_values(1)
 item_nbr_train = df.index.get_level_values(1)
@@ -34,14 +37,17 @@ item_inter = list(set(item_nbr_train).intersection(set(item_nbr_test)))
 df = df.loc[df.index.get_level_values(1).isin(item_inter)]
 promo_df = promo_df.loc[promo_df.index.get_level_values(1).isin(item_inter)]
 
+print("df top 5 before gener train:", df[:5])
+print("promo_df top 5 before gener train:", promo_df[:5])
+
 df_index = df.index
 del item_nbr_test, item_nbr_train, item_inter, df_test; gc.collect()
 
-train_data = train_generator(df, promo_df, items, stores, timesteps, date(2017, 7, 9),
+train_data = train_generator(df, promo_df, items, stores, timesteps, date(2016, 7, 9),
                                            n_range=380, day_skip=1, batch_size=1000, aux_as_tensor=True, reshape_output=2)
-Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 7, 26),
+Xval, Yval = create_dataset(df, promo_df, items, stores, timesteps, date(2016, 7, 26),
                                      aux_as_tensor=True, reshape_output=2)
-Xtest, _ = create_dataset(df, promo_df, items, stores, timesteps, date(2017, 8, 16),
+Xtest, _ = create_dataset(df, promo_df, items, stores, timesteps, date(2016, 2, 16),
                                     aux_as_tensor=True, is_train=False, reshape_output=2)
 
 w = (Xval[7][:, 0, 2] * 0.25 + 1) / (Xval[7][:, 0, 2] * 0.25 + 1).mean()
@@ -110,7 +116,7 @@ x_encode = concatenate([seq_in, encode_features, conv_in, item_mean_in], axis=2)
 # encoder1 = CuDNNGRU(latent_dim, return_state=True, return_sequences=True)
 # encoder2 = CuDNNGRU(latent_dim, return_state=True, return_sequences=False)
 # encoder3 = CuDNNGRU(latent_dim, return_state=True, return_sequences=False)
-encoder = CuDNNGRU(latent_dim, return_state=True)
+encoder = GRU(latent_dim, return_state=True)
 print('Input dimension:', x_encode.shape)
 _, h= encoder(x_encode)
 # s1, h1 = encoder1(x_encode)
@@ -143,7 +149,7 @@ decode_features = decode_slice(decode_features)
 # decoder1 = CuDNNGRU(latent_dim, return_state=True, return_sequences=True)
 # decoder2 = CuDNNGRU(latent_dim, return_state=True, return_sequences=False)
 # decoder3 = CuDNNGRU(latent_dim, return_state=True, return_sequences=False)
-decoder = CuDNNGRU(latent_dim, return_state=True, return_sequences=False)
+decoder = GRU(latent_dim, return_state=True, return_sequences=False)
 # decoder_dense1 = Dense(128, activation='relu')
 decoder_dense2 = Dense(1, activation='relu')
 # dp = Dropout(0.25)
