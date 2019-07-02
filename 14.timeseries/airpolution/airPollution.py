@@ -12,6 +12,7 @@ from sklearn.metrics import mean_squared_error
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
+from keras.layers import GRU
  
 # 转换序列成监督学习问题
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
@@ -92,11 +93,14 @@ output = 1
 
 # 设计网络
 model = Sequential()
-model.add(LSTM(hiddenLayer, input_shape=(train_X.shape[1], train_X.shape[2])))
+#LSTM or GRU both work
+model.add(GRU(hiddenLayer, input_shape=(train_X.shape[1], train_X.shape[2])))
 model.add(Dense(output))
 model.compile(loss='mae', optimizer='adam')
+
 # 拟合神经网络模型
 history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch_size, validation_data=(test_X, test_y), verbose=2, shuffle=False)
+
 # 绘制历史数据
 pyplot.plot(history.history['loss'], label='train')
 pyplot.plot(history.history['val_loss'], label='test')
@@ -106,6 +110,7 @@ pyplot.show()
 # 做出预测
 yhat = model.predict(test_X)
 test_X = test_X.reshape((test_X.shape[0], test_X.shape[2]))
+
 # 反向转换预测值比例
 inv_yhat = concatenate((yhat, test_X[:, 1:]), axis=1)
 inv_yhat = scaler.inverse_transform(inv_yhat)

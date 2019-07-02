@@ -37,11 +37,13 @@ item_inter = list(set(item_nbr_train).intersection(set(item_nbr_test)))
 df = df.loc[df.index.get_level_values(1).isin(item_inter)]
 promo_df = promo_df.loc[promo_df.index.get_level_values(1).isin(item_inter)]
 
-print("df top 5 before gener train:", df[:5])
-print("promo_df top 5 before gener train:", promo_df[:5])
-
 df_index = df.index
 del item_nbr_test, item_nbr_train, item_inter, df_test; gc.collect()
+
+print("df top 5 before gener train:", df[:5])
+print("promo_df top 5 before gener train:", promo_df[:5])
+print("items top 5 before gener train:", items[:5])
+print("stores top 5 before gener train:", stores[:5])
 
 train_data = train_generator(df, promo_df, items, stores, timesteps, date(2016, 7, 9),
                                            n_range=380, day_skip=1, batch_size=1000, aux_as_tensor=True, reshape_output=2)

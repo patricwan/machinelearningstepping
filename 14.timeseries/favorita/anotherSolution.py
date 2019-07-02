@@ -5,6 +5,8 @@ average features and weekly average features on it.
 from datetime import date, timedelta
 import pandas as pd
 import numpy as np
+from pandas import Series, DataFrame
+
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import StandardScaler
@@ -154,6 +156,7 @@ def prepare_dataset(df, promo_df, t2017, is_train=True, name_prefix=None):
 
     X = pd.DataFrame(X)
 
+    # start date and periods is 16 days
     if is_train:
         y = df[
             pd.date_range(t2017, periods=16)
@@ -185,7 +188,17 @@ for i in range(num_days):
     y_l.append(y_tmp)
 
 X_train = pd.concat(X_l, axis=0)
+print("X_train columns ", X_train.columns)
+print("X_train top 5 ", X_train[:5])
+DataFrame(X_train).to_csv("refinedTrainDataX.csv")
+
 y_train = np.concatenate(y_l, axis=0)
+print("y_train columns ", y_train.shape)
+print("y_train top 5 ", y_train[:5])
+DataFrame(y_train).to_csv("refinedTrainDatay.csv")
+
+ytest = y_train[:, 2]
+print("ytest from y_train[:, 2] shape ", ytest.shape, " top 5 ", ytest[:5])
 
 del X_l, y_l
 X_val, y_val = prepare_dataset(df_2017, promo_2017, date(2017, 7, 26))
@@ -211,6 +224,7 @@ X_test3 = X_test3.reindex(df_2017_store_class_index).reset_index(drop=True)
 X_test = pd.concat([X_test, X_test2, X_test3, items.reset_index(), stores.reset_index()], axis=1)
 del df_2017_item, promo_2017_item, df_2017_store_class, df_2017_promo_store_class, df_2017_store_class_index
 gc.collect()
+DataFrame(X_test).to_csv("TestDataX.csv")
 
 scaler = StandardScaler()
 scaler.fit(pd.concat([X_train, X_val, X_test]))
@@ -221,9 +235,16 @@ X_test[:] = scaler.transform(X_test)
 X_train = X_train.as_matrix()
 X_test = X_test.as_matrix()
 X_val = X_val.as_matrix()
+
+#reshape to 3D shape for X
 X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
 X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
 X_val = X_val.reshape((X_val.shape[0], 1, X_val.shape[1]))
+
+print("X_train after reshape shape ", X_train.shape)
+print("X_train after reshape top 5 ", X_train[:5])
+
+
 
 def build_model():
     model = Sequential()
@@ -265,7 +286,7 @@ def build_model():
 
     return model
 
-N_EPOCHS = 2000
+N_EPOCHS = 20
 
 val_pred = []
 test_pred = []
@@ -276,6 +297,8 @@ for i in range(16):
     print("Step %d" % (i+1))
     print("=" * 50)
     y = y_train[:, i]
+    print(" y y_train after [:,i] ", y.shape)
+    print(" y y_train top5", y[:5])
     y_mean = y.mean()
     xv = X_val
     yv = y_val[:, i]
@@ -287,6 +310,7 @@ for i in range(16):
         EarlyStopping(monitor='val_loss', patience=10, verbose=0),
         ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
         ]
+    print("X_train input shape ", X_train.shape, " y input shape ", (y - y_mean).shape)
     model.fit(X_train, y - y_mean, batch_size = 65536, epochs = N_EPOCHS, verbose=2,
                sample_weight=sample_weights, validation_data=(xv,yv-y_mean), callbacks=callbacks )
     val_pred.append(model.predict(X_val)+y_mean)

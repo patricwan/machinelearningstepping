@@ -56,11 +56,13 @@ def prepare_data(series, n_test, n_lag, n_seq):
 	diff_series = difference(raw_values, 1)
 	diff_values = diff_series.values
 	diff_values = diff_values.reshape(len(diff_values), 1)
+    
 	# rescale values to -1, 1
 	scaler = MinMaxScaler(feature_range=(-1, 1))
 	scaled_values = scaler.fit_transform(diff_values)
 	scaled_values = scaled_values.reshape(len(scaled_values), 1)
-	# transform into supervised learning problem X, y
+	
+    # transform into supervised learning problem X, y
 	supervised = series_to_supervised(scaled_values, n_lag, n_seq)
 	supervised_values = supervised.values
 	# split into train and test sets
