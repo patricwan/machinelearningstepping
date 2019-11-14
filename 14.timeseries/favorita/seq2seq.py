@@ -81,6 +81,7 @@ dom_embed_encode = Embedding(31, 4, input_length=timesteps+16)(dom_in)
 
 # aux input
 cat_features = Input(shape=(timesteps+16, 6))
+
 item_family = Lambda(lambda x: x[:, :, 0])(cat_features)
 item_class = Lambda(lambda x: x[:, :, 1])(cat_features)
 item_perish = Lambda(lambda x: x[:, :, 2])(cat_features)

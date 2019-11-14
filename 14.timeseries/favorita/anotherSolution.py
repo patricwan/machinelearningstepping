@@ -66,8 +66,10 @@ promo_2017_train = df_2017.set_index(
     ["store_nbr", "item_nbr", "date"])[["onpromotion"]].unstack(
         level=-1).fillna(False)
 promo_2017_train.columns = promo_2017_train.columns.get_level_values(1)
+
 promo_2017_test = df_test[["onpromotion"]].unstack(level=-1).fillna(False)
 promo_2017_test.columns = promo_2017_test.columns.get_level_values(1)
+
 promo_2017_test = promo_2017_test.reindex(promo_2017_train.index).fillna(False)
 promo_2017 = pd.concat([promo_2017_train, promo_2017_test], axis=1)
 del promo_2017_test, promo_2017_train
@@ -328,6 +330,8 @@ df_preds = pd.DataFrame(
     columns=pd.date_range("2017-07-26", periods=16)
 ).stack().to_frame("unit_sales")
 df_preds.index.set_names(["store_nbr", "item_nbr", "date"], inplace=True)
+#https://www.cnblogs.com/cloud-ken/p/9946341.html
+#https://blog.csdn.net/qq_36523839/article/details/82422865
 df_preds["unit_sales"] = np.clip(np.expm1(df_preds["unit_sales"]), 0, 1000)
 df_preds.reset_index().to_csv('nn_cv.csv', index=False)
 
