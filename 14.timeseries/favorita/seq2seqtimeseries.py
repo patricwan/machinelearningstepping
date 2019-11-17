@@ -94,7 +94,7 @@
 
 
 
-exercise = 2  # Possible values: 1, 2, 3, or 4.
+exercise = 3  # Possible values: 1, 2, 3, or 4.
 
 from datasets import generate_x_y_data_v1, generate_x_y_data_v2, generate_x_y_data_v3, generate_x_y_data_v4 
 
