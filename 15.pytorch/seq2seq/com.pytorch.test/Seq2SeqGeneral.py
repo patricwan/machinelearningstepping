@@ -139,9 +139,6 @@ class Seq2Seq(nn.Module):
         return outputs_i
 
 class Seq2SeqModelTrainer():
-#  batch_size = 20, enc_input_dim = 8, enc_seq_len = 24, enc_hidden_dim = 12, enc_output_dim = 12,
-# dec_input_dim = 2, dec_seq_len = 24, dec_hidden_dim = 12, dec_output_dim = 12,
-#    dec_target_temp_dim = 6, dec_target_dim = 2, learning_rate = 0.001
     def __init__(self, iterator, paramsMap):
         self.batch_size = paramsMap.get("batch_size")
 
@@ -171,12 +168,12 @@ class Seq2SeqModelTrainer():
         #Initialize Weights
         self.seq2seqModel.apply(self.init_weights)
 
-        #self.optimzer = optim.Adam(self.seq2seqModel.parameters(), lr=learning_rate)
-        self.optimzer = optim.SGD(self.seq2seqModel.parameters(), lr=paramsMap.get("learning_rate"))
+        self.optimzer = optim.Adam(self.seq2seqModel.parameters(), lr=paramsMap.get("learning_rate"))
+        #self.optimzer = optim.SGD(self.seq2seqModel.parameters(), lr=paramsMap.get("learning_rate"))
         self.criterion = nn.MSELoss()
 
-        self.epochsTotal = 100
-        self.clip = 1
+        self.epochsTotal = paramsMap.get("epochsTotal")
+        self.clip = paramsMap.get("clip")
         self.iterator = iterator
 
     def init_weights(self, model):
@@ -220,27 +217,15 @@ class Seq2SeqModelTrainer():
             print("epoch ", epoch)
             print("Train loss ", train_loss)
 
-# BATCH_SIZE = 20
-# ALL_RECORDS = 50000
-#
-# enc_input_dim = 8
-# enc_seq_len = 24
-# enc_hidden_dim = 12
-# enc_output_dim = 12
-#
-# dec_input_dim = 2
-# dec_seq_len = 24
-# dec_hidden_dim = 12
-# dec_output_dim = 12
-#
-# dec_target_temp_dim = 6
-# dec_target_dim = 2
-
 class AllParams():
     def __init__(self):
         self.paramsMap = {}
         self.paramsMap["batch_size"] = 20
-        self.paramsMap["ALL_RECORDS"] = 50000
+        self.paramsMap["all_records"] = 50000
+
+        self.paramsMap["epochsTotal"] = 100
+        self.paramsMap["clip"] = 1
+
         self.paramsMap["learning_rate"] = 0.01
 
         self.paramsMap["enc_input_dim"] = 8
@@ -265,11 +250,11 @@ from torch.utils.data import Dataset
 
 class DealDataset(Dataset):
     def __init__(self, allParams):
-        self.src = torch.rand(allParams.get("enc_seq_len"), allParams.get("ALL_RECORDS"),
+        self.src = torch.rand(allParams.get("enc_seq_len"), allParams.get("all_records"),
                               allParams.get("enc_input_dim")) + math.tanh(10)
-        self.target = torch.rand(allParams.get("dec_seq_len"), allParams.get("ALL_RECORDS"),
+        self.target = torch.rand(allParams.get("dec_seq_len"), allParams.get("all_records"),
                                 allParams.get("dec_target_dim") ) + 4
-        self.len = allParams.get("ALL_RECORDS")
+        self.len = allParams.get("all_records")
 
     def __getitem__(self, index):
         return self.src[:,index,:], self.target[:,index,:]
@@ -283,11 +268,4 @@ dealDataset = DealDataset(allParams)
 training_data = Data.DataLoader(dataset=dealDataset, batch_size=allParams.get("batch_size"), shuffle=True)
 
 seq2SeqModelTrainer = Seq2SeqModelTrainer(training_data, allParams)
-
-for index, batch_data in enumerate(training_data):
-    if (index % 1000 ==0):
-        #print("index ", index)
-        print("batch data src size ", batch_data[0].size())
-        print("batch data target size ", batch_data[1].size())
-
 seq2SeqModelTrainer.trainEpoch()
