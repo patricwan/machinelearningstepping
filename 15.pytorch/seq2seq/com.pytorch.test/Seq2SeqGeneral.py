@@ -4,6 +4,12 @@ import numpy as np
 import torch.optim as optim
 import torch.nn.functional as F
 
+import sys
+sys.path.append(".")
+
+from Seq2SeqDCLoadData import prepareData
+
+
 class Encoder(nn.Module):
     def __init__(self, enc_input_dim, enc_hidden_dim):
         super().__init__()
@@ -193,6 +199,9 @@ class Seq2SeqModelTrainer():
             batch_target = batch[1]
             batch_target = batch_target.permute(1, 0, 2)
 
+            #print("batch_input shape ", batch_input.size())
+            #print("batch_target shape ", batch_target.size())
+
             self.optimzer.zero_grad()
 
             output = self.seq2seqModel(batch_input, batch_target)
@@ -220,15 +229,15 @@ class Seq2SeqModelTrainer():
 class AllParams():
     def __init__(self):
         self.paramsMap = {}
-        self.paramsMap["batch_size"] = 20
-        self.paramsMap["all_records"] = 50000
+        self.paramsMap["batch_size"] = 10
+        self.paramsMap["all_records"] = 4280
 
-        self.paramsMap["epochsTotal"] = 100
+        self.paramsMap["epochsTotal"] = 50
         self.paramsMap["clip"] = 1
 
         self.paramsMap["learning_rate"] = 0.01
 
-        self.paramsMap["enc_input_dim"] = 8
+        self.paramsMap["enc_input_dim"] = 16
         self.paramsMap["enc_seq_len"] = 24
         self.paramsMap["enc_hidden_dim"] = 12
         self.paramsMap["enc_output_dim"] = 12
@@ -264,7 +273,31 @@ class DealDataset(Dataset):
 
 allParams = AllParams()
 
-dealDataset = DealDataset(allParams)
+xInput, yOutput = prepareData("../../../../data/sflogs/DC4cfCPUMemData.csv")
+
+import torch.utils.data as Data
+import math
+from torch.utils.data import Dataset
+
+class DCLoadDataset(Dataset):
+    def __init__(self, allParams, xInput, yOutput):
+        self.src = torch.from_numpy(xInput).float()
+        self.src = self.src.permute(0,2,1)
+
+        maxRecords = 4280 #(int)(allParams.get["all_records"])
+        self.target = torch.from_numpy(yOutput[:,:,0:maxRecords]).float()
+        self.target = self.target.permute(0, 2, 1)
+
+        self.len = allParams.get("all_records")
+
+    def __getitem__(self, index):
+        return self.src[:,index,:], self.target[:,index,:]
+
+    def __len__(self):
+        return self.len
+
+
+dealDataset = DCLoadDataset(allParams,xInput, yOutput)
 training_data = Data.DataLoader(dataset=dealDataset, batch_size=allParams.get("batch_size"), shuffle=True)
 
 seq2SeqModelTrainer = Seq2SeqModelTrainer(training_data, allParams)
