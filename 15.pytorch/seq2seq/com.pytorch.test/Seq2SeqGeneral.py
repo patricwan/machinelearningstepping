@@ -26,6 +26,16 @@ class Attention(nn.Module):
         super().__init__()
 
     def forward(self, enc_output_i, enc_or_dec_hid_i):
+        enc_output_i = enc_output_i.permute(1, 0, 2)
+        # enc_ouput:  (batch, seq_len, hidden_size)
+
+        avgPooledEnc_output = F.avg_pool2d(enc_output_i, (enc_output_i.shape[1], 1)).squeeze()
+        # [batch, hidden_size]
+
+        return avgPooledEnc_output
+
+
+    def forwardOriginalSolution(self, enc_output_i, enc_or_dec_hid_i):
         #print("attention started")
         enc_output_i = enc_output_i.permute(1, 0, 2)
         # enc_ouput:  (batch, seq_len, hidden_size)
@@ -98,7 +108,7 @@ class Decoder(nn.Module):
         #print("dec_output_i size ", dec_output_i.size())
         #print("dec_hid_i size ", dec_hid_i.size())
 
-        target_output_temp = F.relu(self.linear_out1(dec_output_i))
+        target_output_temp = F.tanh(self.linear_out1(dec_output_i))
         #print("target_output_temp size ", target_output_temp.size())
 
         target_output = F.relu(self.linear_out2(target_output_temp))
@@ -232,10 +242,10 @@ class AllParams():
         self.paramsMap["batch_size"] = 10
         self.paramsMap["all_records"] = 4280
 
-        self.paramsMap["epochsTotal"] = 50
+        self.paramsMap["epochsTotal"] = 80
         self.paramsMap["clip"] = 1
 
-        self.paramsMap["learning_rate"] = 0.01
+        self.paramsMap["learning_rate"] = 0.005
 
         self.paramsMap["enc_input_dim"] = 16
         self.paramsMap["enc_seq_len"] = 24
