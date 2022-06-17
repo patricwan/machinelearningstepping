@@ -20,7 +20,7 @@ nbconvert==4.1.0
 nbformat==4.0.1
 nltk==3.2
 notebook==4.1.0
-numpy==1.11.0
+numpy==1.21.0
 pandas==0.18.0
 path.py==8.1.2
 pep8==1.7.0
